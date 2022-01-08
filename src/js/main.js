@@ -1,6 +1,6 @@
 // CONSTANTS
-const SKIP_CREDIT_CLASSNAME = "skip-credits"; // subject to change by Netflix
-const SKIP_CREDIT_HIDDEN_CLASSNAME = "skip-credits-hidden"; // subject to change by Netflix
+const SKIP_CREDIT_CLASSNAME = "watch-video--skip-content"; // subject to change by Netflix
+const SKIP_CREDIT_BUTTON_CLASSNAME = "watch-video--skip-content-button"; // subject to change by Netflix
 const SKIP_COUNTDOWN_SECONDS = 2;
 const ENABLE_SKIP_TRIGGER_COUNTDOWN_SECONDS = 5;
 
@@ -9,17 +9,15 @@ let enableSkipTrigger = true;
 
 /**
  * trigger the click event on the skip button
- * @param {object} skipButtonElement 
+ * @param {object} skipButtonContainerElement 
  */
-function triggerSkip(skipButtonElement) {
-  // do nothing if skip credit button is still hidden
-  if(skipButtonElement.classList.contains(SKIP_CREDIT_HIDDEN_CLASSNAME)) {
-    enableSkipTrigger = true;
-    return;
-  };
+function triggerSkip(skipButtonContainerElement) {
+  // do nothing if skip credit button container isn't present in the DOM
+  const skipButtonContainerElementList = document.body.getElementsByClassName(SKIP_CREDIT_CLASSNAME);
+  if (!skipButtonContainerElementList.length) return;
 
-  const skipElementAnchor = skipButtonElement.children[0];
-  if(skipElementAnchor == null) {
+  const skipElementButton = skipButtonContainerElement.children[0];
+  if(skipElementButton == null) {
     enableSkipTrigger = true;
     return;
   };
@@ -29,7 +27,7 @@ function triggerSkip(skipButtonElement) {
    * and the click anchor element exists
    * then trigger a click event on the anchor element
    */
-  skipElementAnchor.click();
+  skipElementButton.click();
   console.info("==========SkipAssist Skipped Intro!==========");
 
   /**
@@ -57,12 +55,12 @@ function AttachBodyMutationObserver(bodyElement) {
   const callback = function(mutations, observer) {
     if(!enableSkipTrigger) return;
 
-    const skipButtonElementList = bodyElement.getElementsByClassName(SKIP_CREDIT_CLASSNAME);
+    const skipButtonContainerElementList = bodyElement.getElementsByClassName(SKIP_CREDIT_CLASSNAME);
 
-    if (!skipButtonElementList.length) return;
+    if (!skipButtonContainerElementList.length) return;
 
-    const skipButtonElement = skipButtonElementList[0];
-    if (!skipButtonElement) return;
+    const skipButtonContainerElement = skipButtonContainerElementList[0];
+    if (!skipButtonContainerElement) return;
 
     /**
      * if skip button has been added to the dom as a child of the body element
@@ -71,7 +69,7 @@ function AttachBodyMutationObserver(bodyElement) {
 
     enableSkipTrigger = false;
     setTimeout(() => {
-      triggerSkip(skipButtonElement);
+      triggerSkip(skipButtonContainerElement);
     }, SKIP_COUNTDOWN_SECONDS * 1000);
   }
 
