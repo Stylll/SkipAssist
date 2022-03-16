@@ -1,12 +1,12 @@
 {
   "name": "SkipAssist",
   "description": "A browser extension to skip the intro credits when watching a show on Netflix",
-  "version": "2.0",
+  "version": "3.0",
   "manifest_version": 3,
   "content_scripts": [
     {
       "matches": ["https://*.netflix.com/*"],
-      "js": ["src/js/main.js"]
+      "js": ["src/js/jquery-3.6.0.min.js", "src/js/main.js"]
     }
   ]
 }
